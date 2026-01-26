@@ -1,4 +1,4 @@
-package publicnextawsconfig
+package awsconfig
 
 import (
 	"context"

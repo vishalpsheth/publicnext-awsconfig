@@ -1,4 +1,4 @@
-module publicnext-awsconfig
+module github.com/vishalpsheth/publicnext-awsconfig
 
 go 1.24.4
 

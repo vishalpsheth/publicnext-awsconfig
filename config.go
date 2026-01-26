@@ -28,7 +28,7 @@ type CoreConfig struct {
 type StreamsConfig struct {
 	CoreConfig
 	ConsumerName string `json:"CONSUMER_NAME" env:"CONSUMER_NAME"`
-	MaxRetries   int64  `json:"MAX_RETRIES" env:"MAX_RETRIES"`
+	MaxRetries   int64  `json:"MAX_RETRIES,string" env:"MAX_RETRIES"`
 }
 
 // WebConfig is for web/API services

@@ -1,0 +1,46 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Application binaries
+article-api
+publicnext-*-api
+get_mongo_uri
+
+# Output of build
+/bin/
+build/
+dist/
+
+# Dependency directories
+/vendor/
+node_modules/
+
+# Go test / coverage
+coverage.out
+*.coverprofile
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*~
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+
+# Logs
+*.log

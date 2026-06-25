@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 )
 
 type MongoClient struct {
@@ -24,7 +25,9 @@ func NewMongoClient(mongoURI, mongoDB string) (*MongoClient, error) {
 		return nil, fmt.Errorf("invalid mongo config: URI and DB name required")
 	}
 
-	clientOptions := options.Client().ApplyURI(mongoURI)
+	clientOptions := options.Client().
+		ApplyURI(mongoURI).
+		SetWriteConcern(writeconcern.Majority())
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

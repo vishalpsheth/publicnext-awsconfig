@@ -7,6 +7,7 @@ import (
 	"os"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -217,32 +218,53 @@ func loadFromLocal[T any](cfg *T, path string, verbose bool) error {
 	return populateFromEnv(cfg)
 }
 
-// loadFromAWS loads config from AWS Secrets Manager
+// loadFromAWS loads config from AWS Secrets Manager with retry and timeout.
 func loadFromAWS[T any](cfg *T, secretName, region string, verbose bool) error {
 	if verbose {
 		fmt.Printf("🔐 Loading from AWS Secrets Manager: %s (region: %s)\n", secretName, region)
 	}
 
-	ctx := context.TODO()
-	awsCfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
-	if err != nil {
-		return fmt.Errorf("failed to load AWS config: %w", err)
+	var lastErr error
+	maxRetries := 3
+	baseDelay := 1 * time.Second
+
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		if attempt > 0 {
+			delay := baseDelay * time.Duration(1<<(attempt-1)) // exponential: 1s, 2s
+			if verbose {
+				fmt.Printf("⏳ Retry %d/%d after %s...\n", attempt+1, maxRetries, delay)
+			}
+			time.Sleep(delay)
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		awsCfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
+		if err != nil {
+			cancel()
+			lastErr = fmt.Errorf("failed to load AWS config: %w", err)
+			continue
+		}
+
+		client := secretsmanager.NewFromConfig(awsCfg)
+		result, err := client.GetSecretValue(ctx, &secretsmanager.GetSecretValueInput{
+			SecretId: aws.String(secretName),
+		})
+		cancel()
+
+		if err != nil {
+			lastErr = fmt.Errorf("failed to get secret '%s': %w", secretName, err)
+			continue
+		}
+
+		// Unmarshal directly into the generic type
+		if err := json.Unmarshal([]byte(*result.SecretString), cfg); err != nil {
+			return fmt.Errorf("failed to unmarshal secret JSON: %w", err)
+		}
+
+		return nil
 	}
 
-	client := secretsmanager.NewFromConfig(awsCfg)
-	result, err := client.GetSecretValue(ctx, &secretsmanager.GetSecretValueInput{
-		SecretId: aws.String(secretName),
-	})
-	if err != nil {
-		return fmt.Errorf("failed to get secret '%s': %w\nEnsure IAM role has secretsmanager:GetSecretValue permission", secretName, err)
-	}
-
-	// Unmarshal directly into the generic type
-	if err := json.Unmarshal([]byte(*result.SecretString), cfg); err != nil {
-		return fmt.Errorf("failed to unmarshal secret JSON: %w", err)
-	}
-
-	return nil
+	return fmt.Errorf("%w\nEnsure IAM role has secretsmanager:GetSecretValue permission (retried %d times)", lastErr, maxRetries)
 }
 
 // populateFromEnv uses reflection to populate struct fields from environment variables

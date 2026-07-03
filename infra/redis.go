@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -15,20 +14,48 @@ type RedisClient struct {
 	*redis.Client
 }
 
+// RedisOptions configures the Redis connection pool.
+type RedisOptions struct {
+	PoolSize     int
+	MinIdleConns int
+	DialTimeout  time.Duration
+}
+
 // NewRedisClient initializes and connects to Redis
-func NewRedisClient(redisAddr string) (*RedisClient, error) {
+func NewRedisClient(redisAddr string, opts ...RedisOptions) (*RedisClient, error) {
 	if redisAddr == "" {
 		return nil, fmt.Errorf("invalid redis config: address required")
 	}
 
-	opts, err := getRedisOptions(redisAddr)
+	var opt RedisOptions
+	if len(opts) > 0 {
+		opt = opts[0]
+	}
+
+	// Sensible defaults
+	if opt.PoolSize == 0 {
+		opt.PoolSize = 50
+	}
+	if opt.MinIdleConns == 0 {
+		opt.MinIdleConns = 10
+	}
+	if opt.DialTimeout == 0 {
+		opt.DialTimeout = 5 * time.Second
+	}
+
+	redisOpts, err := getRedisOptions(redisAddr)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create redis options: %w", err)
 	}
 
-	client := redis.NewClient(opts)
+	// Apply pool settings
+	redisOpts.PoolSize = opt.PoolSize
+	redisOpts.MinIdleConns = opt.MinIdleConns
+	redisOpts.DialTimeout = opt.DialTimeout
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	client := redis.NewClient(redisOpts)
+
+	ctx, cancel := context.WithTimeout(context.Background(), opt.DialTimeout)
 	defer cancel()
 
 	if err := client.Ping(ctx).Err(); err != nil {
@@ -36,7 +63,6 @@ func NewRedisClient(redisAddr string) (*RedisClient, error) {
 		return nil, fmt.Errorf("redis connection failed (Addr: %s): %w", redisAddr, err)
 	}
 
-	log.Printf("✅ Redis connected successfully: %s", redisAddr)
 	return &RedisClient{Client: client}, nil
 }
 
@@ -65,8 +91,37 @@ func getRedisOptions(redisAddr string) (*redis.Options, error) {
 		return opt, nil
 	}
 
-	// Simple "host:port" format
-	return &redis.Options{Addr: addr, DB: 0}, nil
+	// Plain "host:port" format — auto-detect TLS based on IP
+	opt := &redis.Options{Addr: addr, DB: 0}
+
+	// Extract host from addr
+	host := addr
+	if idx := strings.LastIndex(addr, ":"); idx != -1 {
+		host = addr[:idx]
+	}
+
+	// Apply TLS for non-private IPs (AWS managed endpoints)
+	if !isPrivateIP(host) {
+		opt.TLSConfig = &tls.Config{MinVersion: tls.VersionTLS12}
+	}
+
+	return opt, nil
+}
+
+// isPrivateIP checks if the host is a private/local IP address
+func isPrivateIP(host string) bool {
+	return strings.HasPrefix(host, "10.") ||
+		strings.HasPrefix(host, "192.168.") ||
+		strings.HasPrefix(host, "172.16.") || strings.HasPrefix(host, "172.17.") ||
+		strings.HasPrefix(host, "172.18.") || strings.HasPrefix(host, "172.19.") ||
+		strings.HasPrefix(host, "172.20.") || strings.HasPrefix(host, "172.21.") ||
+		strings.HasPrefix(host, "172.22.") || strings.HasPrefix(host, "172.23.") ||
+		strings.HasPrefix(host, "172.24.") || strings.HasPrefix(host, "172.25.") ||
+		strings.HasPrefix(host, "172.26.") || strings.HasPrefix(host, "172.27.") ||
+		strings.HasPrefix(host, "172.28.") || strings.HasPrefix(host, "172.29.") ||
+		strings.HasPrefix(host, "172.30.") || strings.HasPrefix(host, "172.31.") ||
+		strings.HasPrefix(host, "127.") ||
+		host == "localhost"
 }
 
 // Close handles graceful disconnection

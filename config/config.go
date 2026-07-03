@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -13,38 +14,39 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	secretsmanager "github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 )
 
 // CoreConfig contains fields that are truly common across ALL repos
 type CoreConfig struct {
-	MongoURI    string `json:"MONGO_URI" env:"MONGO_URI"`
-	MongoDB     string `json:"MONGO_DB" env:"MONGO_DB"`
-	RedisAddr   string `json:"CACHE_ADDR" env:"CACHE_ADDR"`
+	MongoURI    string `json:"MONGO_URI" env:"MONGO_URI" required:"true"`
+	MongoDB     string `json:"MONGO_DB" env:"MONGO_DB" required:"true"`
+	RedisAddr   string `json:"CACHE_ADDR" env:"CACHE_ADDR" required:"true"`
 	PostgresDSN string `json:"POSTGRES_DSN" env:"POSTGRES_DSN"`
-	AWSRegion   string `json:"AWS_REGION" env:"AWS_REGION"`
-	Environment string `json:"ENVIRONMENT" env:"ENVIRONMENT"`
+	AWSRegion   string `json:"AWS_REGION" env:"AWS_REGION" required:"true"`
+	Environment string `json:"ENVIRONMENT" env:"ENVIRONMENT" required:"true"`
 }
 
 // StreamsConfig is for streaming/consumer services
 type StreamsConfig struct {
 	CoreConfig
-	ConsumerName string `json:"CONSUMER_NAME" env:"CONSUMER_NAME"`
+	ConsumerName string `json:"CONSUMER_NAME" env:"CONSUMER_NAME" required:"true"`
 	MaxRetries   int64  `json:"MAX_RETRIES,string" env:"MAX_RETRIES"`
 }
 
 // WebConfig is for web/API services
 type WebConfig struct {
 	CoreConfig
-	AppDomain       string `json:"APP_DOMAIN" env:"APP_DOMAIN"`
+	AppDomain       string `json:"APP_DOMAIN" env:"APP_DOMAIN" required:"true"`
 	AppDownloadLink string `json:"APP_DOWNLOAD_LINK" env:"APP_DOWNLOAD_LINK"`
 }
 
 // MediaConfig is for services handling media/CDN
 type MediaConfig struct {
 	CoreConfig
-	PrimaryImageCDN string `json:"PRIMARY_IMG_CDN" env:"PRIMARY_IMG_CDN"`
+	PrimaryImageCDN string `json:"PRIMARY_IMG_CDN" env:"PRIMARY_IMG_CDN" required:"true"`
 	BackupImageCDN  string `json:"BACKUP_IMG_CDN" env:"BACKUP_IMG_CDN"`
-	PrimaryVideoCDN string `json:"PRIMARY_VID_CDN" env:"PRIMARY_VID_CDN"`
+	PrimaryVideoCDN string `json:"PRIMARY_VID_CDN" env:"PRIMARY_VID_CDN" required:"true"`
 	BackupVideoCDN  string `json:"BACKUP_VID_CDN" env:"BACKUP_VID_CDN"`
 }
 
@@ -61,11 +63,14 @@ type LoadOptions struct {
 	// AWSRegion overrides the default region resolution
 	AWSRegion string
 
-	// ForceAWS forces AWS Secrets Manager even if local file exists
-	ForceAWS bool
+	// ForceLocal bypasses AWS Secrets Manager and loads from local file directly (dev mode)
+	ForceLocal bool
 
-	// Verbose enables detailed logging
+	// Verbose is deprecated; use Logger instead. Kept for backward compatibility.
 	Verbose bool
+
+	// Logger is an optional structured logger; if nil, library produces no output
+	Logger *zap.Logger
 
 	// SkipValidation skips the automatic validation of required fields
 	SkipValidation bool
@@ -108,29 +113,27 @@ func Load[T any](secretName string, opts ...LoadOptions) (*T, error) {
 		options.AWSRegion = resolveRegion()
 	}
 
-	// Determine if we should use local or AWS
-	useLocal := false
-	if !options.ForceAWS && options.LocalPath != "" {
-		if _, err := os.Stat(options.LocalPath); err == nil {
-			useLocal = true
-			if options.Verbose {
-				fmt.Printf("📂 Local config file found: %s\n", options.LocalPath)
+	if options.ForceLocal {
+		// Dev shortcut — skip SM
+		if err := loadFromLocal(&cfg, options.LocalPath, options.Logger); err != nil {
+			return nil, err
+		}
+	} else {
+		// Production path — SM first
+		err := loadFromAWS(&cfg, secretName, options.AWSRegion, options.Logger)
+		if err != nil {
+			// SM failed — try local fallback
+			logInfo(options.Logger, "AWS SM unreachable, trying local fallback", err)
+			if localErr := loadFromLocal(&cfg, options.LocalPath, options.Logger); localErr != nil {
+				return nil, fmt.Errorf("both AWS SM and local config failed: SM error: %w", err)
 			}
 		}
 	}
 
-	var err error
-	if useLocal {
-		err = loadFromLocal(&cfg, options.LocalPath, options.Verbose)
-	} else {
-		err = loadFromAWS(&cfg, secretName, options.AWSRegion, options.Verbose)
-	}
+	// ALWAYS apply env var overrides (highest priority)
+	populateFromEnv(&cfg)
 
-	if err != nil {
-		return nil, err
-	}
-
-	// Run validation if not skipped
+	// Validate (only required:"true" fields)
 	if !options.SkipValidation {
 		if err := validateConfig(&cfg); err != nil {
 			return nil, fmt.Errorf("validation failed: %w", err)
@@ -147,11 +150,11 @@ func validateConfig(cfg interface{}) error {
 		return validator.Validate()
 	}
 
-	// Default validation: check all string fields are non-empty
+	// Default validation: check only required:"true" fields
 	return validateRequiredFields(cfg)
 }
 
-// validateRequiredFields uses reflection to check all string fields are populated
+// validateRequiredFields uses reflection to check fields tagged required:"true"
 func validateRequiredFields(cfg interface{}) error {
 	v := reflect.ValueOf(cfg)
 	if v.Kind() == reflect.Ptr {
@@ -173,21 +176,17 @@ func validateRequiredFields(cfg interface{}) error {
 			continue
 		}
 
-		// Check if field has a json or env tag
-		jsonTag := fieldType.Tag.Get("json")
-		envTag := fieldType.Tag.Get("env")
-
-		if jsonTag == "" && envTag == "" {
-			continue // Skip fields without tags
+		// Only validate fields tagged required:"true"
+		requiredTag := fieldType.Tag.Get("required")
+		if requiredTag != "true" {
+			continue
 		}
 
 		// Get field name for error message
 		fieldName := fieldType.Name
-		if jsonTag != "" {
+		if jsonTag := fieldType.Tag.Get("json"); jsonTag != "" {
 			parts := strings.Split(jsonTag, ",")
 			fieldName = parts[0]
-		} else if envTag != "" {
-			fieldName = envTag
 		}
 
 		// Check if string field is empty
@@ -204,10 +203,8 @@ func validateRequiredFields(cfg interface{}) error {
 }
 
 // loadFromLocal loads config from a local file (.env format)
-func loadFromLocal[T any](cfg *T, path string, verbose bool) error {
-	if verbose {
-		fmt.Printf("📂 Loading from local file: %s\n", path)
-	}
+func loadFromLocal[T any](cfg *T, path string, logger *zap.Logger) error {
+	logInfo(logger, "Loading from local file", path)
 
 	// Load .env file
 	if err := godotenv.Load(path); err != nil {
@@ -219,10 +216,8 @@ func loadFromLocal[T any](cfg *T, path string, verbose bool) error {
 }
 
 // loadFromAWS loads config from AWS Secrets Manager with retry and timeout.
-func loadFromAWS[T any](cfg *T, secretName, region string, verbose bool) error {
-	if verbose {
-		fmt.Printf("🔐 Loading from AWS Secrets Manager: %s (region: %s)\n", secretName, region)
-	}
+func loadFromAWS[T any](cfg *T, secretName, region string, logger *zap.Logger) error {
+	logInfo(logger, "Loading from AWS Secrets Manager", secretName)
 
 	var lastErr error
 	maxRetries := 3
@@ -231,9 +226,7 @@ func loadFromAWS[T any](cfg *T, secretName, region string, verbose bool) error {
 	for attempt := 0; attempt < maxRetries; attempt++ {
 		if attempt > 0 {
 			delay := baseDelay * time.Duration(1<<(attempt-1)) // exponential: 1s, 2s
-			if verbose {
-				fmt.Printf("⏳ Retry %d/%d after %s...\n", attempt+1, maxRetries, delay)
-			}
+			logInfo(logger, fmt.Sprintf("Retry %d/%d after %s", attempt+1, maxRetries, delay))
 			time.Sleep(delay)
 		}
 
@@ -319,9 +312,24 @@ func populateFromEnv(cfg interface{}) error {
 		case reflect.String:
 			field.SetString(envValue)
 		case reflect.Int, reflect.Int64:
-			var intVal int64
-			if _, err := fmt.Sscanf(envValue, "%d", &intVal); err == nil {
-				field.SetInt(intVal)
+			// Check if it's time.Duration (which is int64 underneath)
+			if field.Type() == reflect.TypeOf(time.Duration(0)) {
+				if d, err := time.ParseDuration(envValue); err == nil {
+					field.SetInt(int64(d))
+				}
+			} else {
+				var intVal int64
+				if _, err := fmt.Sscanf(envValue, "%d", &intVal); err == nil {
+					field.SetInt(intVal)
+				}
+			}
+		case reflect.Uint, reflect.Uint32, reflect.Uint64:
+			if n, err := strconv.ParseUint(envValue, 10, 64); err == nil {
+				field.SetUint(n)
+			}
+		case reflect.Float64:
+			if f, err := strconv.ParseFloat(envValue, 64); err == nil {
+				field.SetFloat(f)
 			}
 		case reflect.Bool:
 			field.SetBool(strings.ToLower(envValue) == "true")
@@ -368,4 +376,16 @@ func RedactCredentials(uri string) string {
 	}
 
 	return "****"
+}
+
+// logInfo logs a message using the provided zap logger, or does nothing if logger is nil
+func logInfo(logger *zap.Logger, msg string, args ...interface{}) {
+	if logger == nil {
+		return
+	}
+	if len(args) > 0 {
+		logger.Info(msg, zap.Any("detail", args[0]))
+	} else {
+		logger.Info(msg)
+	}
 }

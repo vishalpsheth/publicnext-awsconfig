@@ -3,10 +3,8 @@ package infra
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
-	config "github.com/vishalpsheth/publicnext-awsconfig/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -18,18 +16,48 @@ type MongoClient struct {
 	Database *mongo.Database
 }
 
+// MongoOptions configures the MongoDB connection pool.
+type MongoOptions struct {
+	MinPool                uint64
+	MaxPool                uint64
+	ConnectTimeout         time.Duration
+	ServerSelectionTimeout time.Duration
+}
+
 // NewMongoClient initializes and connects to MongoDB
-// Accepts any config type that embeds config.CoreConfig (which has MongoURI and MongoDB)
-func NewMongoClient(mongoURI, mongoDB string) (*MongoClient, error) {
+func NewMongoClient(mongoURI, mongoDB string, opts ...MongoOptions) (*MongoClient, error) {
 	if mongoURI == "" || mongoDB == "" {
 		return nil, fmt.Errorf("invalid mongo config: URI and DB name required")
 	}
 
+	var opt MongoOptions
+	if len(opts) > 0 {
+		opt = opts[0]
+	}
+
+	// Sensible defaults
+	if opt.MinPool == 0 {
+		opt.MinPool = 5
+	}
+	if opt.MaxPool == 0 {
+		opt.MaxPool = 100
+	}
+	if opt.ConnectTimeout == 0 {
+		opt.ConnectTimeout = 10 * time.Second
+	}
+	if opt.ServerSelectionTimeout == 0 {
+		opt.ServerSelectionTimeout = 5 * time.Second
+	}
+
 	clientOptions := options.Client().
 		ApplyURI(mongoURI).
+		SetMinPoolSize(opt.MinPool).
+		SetMaxPoolSize(opt.MaxPool).
+		SetConnectTimeout(opt.ConnectTimeout).
+		SetServerSelectionTimeout(opt.ServerSelectionTimeout).
 		SetWriteConcern(writeconcern.Majority())
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), opt.ConnectTimeout)
 	defer cancel()
 
 	client, err := mongo.Connect(ctx, clientOptions)
@@ -40,8 +68,6 @@ func NewMongoClient(mongoURI, mongoDB string) (*MongoClient, error) {
 	if err := client.Ping(ctx, readpref.Primary()); err != nil {
 		return nil, fmt.Errorf("failed to ping mongo: %w", err)
 	}
-
-	log.Printf("✅ MongoDB connected: %s (DB: %s)", config.RedactCredentials(mongoURI), mongoDB)
 
 	return &MongoClient{
 		Client:   client,

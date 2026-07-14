@@ -25,6 +25,61 @@ type CoreConfig struct {
 	PostgresDSN string `json:"POSTGRES_DSN" env:"POSTGRES_DSN"`
 	AWSRegion   string `json:"AWS_REGION" env:"AWS_REGION" required:"true"`
 	Environment string `json:"ENVIRONMENT" env:"ENVIRONMENT" required:"true"`
+
+	// HTTP Server Configuration (optional — sensible defaults applied if unset)
+	ServerPort        string `json:"SERVER_PORT" env:"SERVER_PORT"`                   // default: ":8080"
+	ReadTimeout       string `json:"HTTP_READ_TIMEOUT" env:"HTTP_READ_TIMEOUT"`       // default: "10s"
+	WriteTimeout      string `json:"HTTP_WRITE_TIMEOUT" env:"HTTP_WRITE_TIMEOUT"`     // default: "10s"
+	IdleTimeout       string `json:"HTTP_IDLE_TIMEOUT" env:"HTTP_IDLE_TIMEOUT"`       // default: "60s"
+	ReadHeaderTimeout string `json:"HTTP_READ_HEADER_TIMEOUT" env:"HTTP_READ_HEADER_TIMEOUT"` // default: "5s"
+	ShutdownTimeout   string `json:"SHUTDOWN_TIMEOUT" env:"SHUTDOWN_TIMEOUT"`         // default: "10s"
+}
+
+// GetServerPort returns the configured listen address (host:port).
+// Returns ":8080" if not explicitly set.
+func (c *CoreConfig) GetServerPort() string {
+	if c.ServerPort == "" {
+		return ":8080"
+	}
+	return c.ServerPort
+}
+
+// GetReadTimeout returns the parsed HTTP server read timeout. Defaults to 10s.
+func (c *CoreConfig) GetReadTimeout() time.Duration {
+	return parseDurationOrDefault(c.ReadTimeout, 10*time.Second)
+}
+
+// GetWriteTimeout returns the parsed HTTP server write timeout. Defaults to 10s.
+func (c *CoreConfig) GetWriteTimeout() time.Duration {
+	return parseDurationOrDefault(c.WriteTimeout, 10*time.Second)
+}
+
+// GetIdleTimeout returns the parsed HTTP server idle timeout. Defaults to 60s.
+func (c *CoreConfig) GetIdleTimeout() time.Duration {
+	return parseDurationOrDefault(c.IdleTimeout, 60*time.Second)
+}
+
+// GetReadHeaderTimeout returns the parsed read-header timeout. Defaults to 5s.
+func (c *CoreConfig) GetReadHeaderTimeout() time.Duration {
+	return parseDurationOrDefault(c.ReadHeaderTimeout, 5*time.Second)
+}
+
+// GetShutdownTimeout returns the parsed graceful shutdown timeout. Defaults to 10s.
+func (c *CoreConfig) GetShutdownTimeout() time.Duration {
+	return parseDurationOrDefault(c.ShutdownTimeout, 10*time.Second)
+}
+
+// parseDurationOrDefault attempts to parse s as a duration, returning
+// the given default if s is empty or unparseable.
+func parseDurationOrDefault(s string, def time.Duration) time.Duration {
+	if s == "" {
+		return def
+	}
+	d, err := time.ParseDuration(s)
+	if err != nil {
+		return def
+	}
+	return d
 }
 
 // StreamsConfig is for streaming/consumer services

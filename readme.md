@@ -280,6 +280,66 @@ type LoadOptions struct {
 }
 ```
 
+## Precedence Modes (opt-in per-field resolution)
+
+`LoadOptions.Precedence` selects how overlapping sources are resolved. It is
+fully backward compatible: the zero value keeps the historical loader behavior.
+
+```go
+const (
+    PrecedenceLegacy                 Precedence = iota // zero value — unchanged behavior
+    PrecedenceSecretOverEnvOverFile                    // opt-in per-field merge
+)
+```
+
+### `PrecedenceLegacy` (default)
+The historical path, unchanged: the Secrets Manager JSON is unmarshalled as a
+whole into your struct, `.env` is used only as a fallback if Secrets Manager is
+unreachable, and process-environment overrides are applied last. Existing callers
+need no changes.
+
+### `PrecedenceSecretOverEnvOverFile` (opt-in)
+Three sources are loaded **independently** — the `.env` file (read into a map,
+never mutating the process environment), the process environment, and the
+Secrets Manager JSON — and merged **per field** in the order
+**secret > environment > file**. Defaults are not injected at load time;
+validation then runs through the existing mechanism.
+
+```go
+cfg, err := awsconfig.LoadStreams("prod/publicnext/appconfig", awsconfig.LoadOptions{
+    Precedence: awsconfig.PrecedenceSecretOverEnvOverFile,
+})
+```
+
+Field-level semantics:
+
+- **Presence vs. zero value**: a field present in a higher source always wins,
+  even when its value is `false`, `0`, or `""`. These are authoritative, never
+  treated as "missing".
+- **Missing key**: a key absent from the secret falls back to env, then file. A
+  key missing from all three is left at its Go zero value (optional) or fails the
+  existing required-field validation.
+- **JSON `null`**: a secret value of `null` is treated as **absent** (it permits
+  fallback); it never becomes `0`/`""`. To express an explicit empty value, send
+  `""`, which is present.
+- **Typed parsing is strict**: tokens are parsed with `strconv`/`time.ParseDuration`
+  and any malformed value (`"5abc"` for an int, `"yes"` for a bool, a bare number
+  for a `time.Duration`) is a hard startup error naming the field — never silently
+  coerced. A `time.Duration` requires a unit (e.g. `"30s"`).
+- **Bare JSON numbers**: a bare number is accepted on a string field (`8080` →
+  `"8080"`) and on numeric fields; it is rejected on a `time.Duration` field.
+
+ForceLocal in this mode skips Secrets Manager entirely and resolves
+**environment > file**.
+
+AWS error handling: `ResourceNotFoundException` permits fallback to env/file;
+access-denied, a malformed or non-object secret body, a nil secret string body
+(binary-only secret), wrong field types, and transient failures after bounded
+retries all fail startup. (A per-key JSON `null` is distinct: it is treated as
+absent and permits fallback, as described above.) Errors and logs never contain
+secret values. An invalid `Precedence` value is a hard error and never silently
+selects local mode.
+
 ## Validation
 
 ### Default Validation

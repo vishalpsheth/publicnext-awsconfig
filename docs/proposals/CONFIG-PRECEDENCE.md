@@ -1,8 +1,14 @@
 # Proposal: opt-in per-field config precedence (secret > env > file)
 
-**Status: PROPOSAL ONLY — no code change, no release in this task.** Prepared
-for publicnext-user-profile's QA requirement. Must preserve existing behavior
-for all current callers.
+**Status: IMPLEMENTED BEHIND FLAG, PENDING RELEASE.** The design below is
+implemented on branch `feat/config-precedence-impl` as the opt-in
+`PrecedenceSecretOverEnvOverFile` mode (`config/precedence.go`,
+`config/precedence_test.go`). It is strictly backward compatible: the zero value
+`PrecedenceLegacy` preserves the historical loader exactly, so current callers
+are unaffected until they explicitly opt in. **No release tag has been cut** —
+the proposed version is v1.3.0 (additive, backward compatible) and is not yet
+published. Prepared for publicnext-user-profile's QA requirement. Must preserve
+existing behavior for all current callers.
 
 ## Problem
 

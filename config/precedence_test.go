@@ -289,6 +289,29 @@ func TestPerField_FileWinsWhenSecretAndEnvOmit(t *testing.T) {
 	}
 }
 
+func TestPerField_MalformedLowerValue_DoesNotDefeatValidSecret(t *testing.T) {
+	// Owner requirement: a malformed value in a LOWER-priority source (env/file)
+	// must NOT fail the load or override a VALID higher-priority value. The secret
+	// supplies MAX_RETRIES=5 validly; env and file both carry a malformed token
+	// for the same field. The secret must win and the malformed lower tokens must
+	// never be parsed.
+	body := `{"MONGO_URI":"m","MONGO_DB":"d","CACHE_ADDR":"c","AWS_REGION":"r","ENVIRONMENT":"p","MAX_RETRIES":5}`
+	restore := withFakeClient(t, &fakeFetcher{out: secretOutput(body)})
+	defer restore()
+
+	os.Setenv("MAX_RETRIES", "env-not-a-number")
+	defer os.Unsetenv("MAX_RETRIES")
+	envFile := writeEnvFile(t, "MAX_RETRIES=file-not-a-number\n")
+
+	cfg, err := Load[precConfig]("sn", LoadOptions{Precedence: PrecedenceSecretOverEnvOverFile, LocalPath: envFile})
+	if err != nil {
+		t.Fatalf("malformed lower-priority value must not fail load when secret wins: %v", err)
+	}
+	if cfg.MaxRetries != 5 {
+		t.Fatalf("expected secret value 5 to win over malformed env/file, got %d", cfg.MaxRetries)
+	}
+}
+
 func TestPerField_MissingEverywhere_ValidationError(t *testing.T) {
 	// Required MONGO_URI missing everywhere.
 	body := `{"MONGO_DB":"d","CACHE_ADDR":"c","AWS_REGION":"r","ENVIRONMENT":"p"}`

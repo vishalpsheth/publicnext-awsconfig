@@ -319,15 +319,33 @@ Field-level semantics:
 - **Missing key**: a key absent from the secret falls back to env, then file. A
   key missing from all three is left at its Go zero value (optional) or fails the
   existing required-field validation.
-- **JSON `null`**: a secret value of `null` is treated as **absent** (it permits
-  fallback); it never becomes `0`/`""`. To express an explicit empty value, send
-  `""`, which is present.
+- **JSON `null` vs. present empty string**: for every field kind, including
+  `string`, a secret value of JSON `null` is treated as **absent** — the field is
+  not set from the secret and resolution falls through to environment, then file,
+  then the Go zero value. In particular, a `null` on a `string` field does **not**
+  set that field to `""`; it permits fallback. To set a field authoritatively to
+  the empty string, send a present empty JSON string (`""`): that is a *present*
+  value, so it wins over all lower sources and stops fallback. The same holds for
+  the environment and file layers, where a present-but-empty value (`KEY=`) is an
+  authoritative empty string, not an absent key.
 - **Typed parsing is strict**: tokens are parsed with `strconv`/`time.ParseDuration`
   and any malformed value (`"5abc"` for an int, `"yes"` for a bool, a bare number
   for a `time.Duration`) is a hard startup error naming the field — never silently
   coerced. A `time.Duration` requires a unit (e.g. `"30s"`).
 - **Bare JSON numbers**: a bare number is accepted on a string field (`8080` →
   `"8080"`) and on numeric fields; it is rejected on a `time.Duration` field.
+- **Lower-priority sources are not parsed eagerly**: for each field the merge
+  selects the single highest *present* layer (secret, then environment, then
+  file) and decodes **only that layer's** token. A lower-priority layer is never
+  parsed when a higher-priority layer supplies the field, so a malformed value in
+  a lower source (for example `MAX_RETRIES=notanumber` in the environment or file)
+  **cannot** fail the load or override a valid value when the secret supplies that
+  field validly — the losing layer's token is read for presence but never decoded.
+  The only up-front, whole-value parse is the secret body itself: it must be a
+  JSON object (a non-object or nil body is a hard error), but its individual
+  per-field values are decoded lazily, only for the fields where the secret wins.
+  A malformed value is therefore an error only when it belongs to the layer that
+  actually wins that field.
 
 ForceLocal in this mode skips Secrets Manager entirely and resolves
 **environment > file**.

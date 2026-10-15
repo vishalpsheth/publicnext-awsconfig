@@ -27,12 +27,12 @@ type CoreConfig struct {
 	Environment string `json:"ENVIRONMENT" env:"ENVIRONMENT" required:"true"`
 
 	// HTTP Server Configuration (optional — sensible defaults applied if unset)
-	ServerPort        string `json:"SERVER_PORT" env:"SERVER_PORT"`                   // default: ":8080"
-	ReadTimeout       string `json:"HTTP_READ_TIMEOUT" env:"HTTP_READ_TIMEOUT"`       // default: "10s"
-	WriteTimeout      string `json:"HTTP_WRITE_TIMEOUT" env:"HTTP_WRITE_TIMEOUT"`     // default: "10s"
-	IdleTimeout       string `json:"HTTP_IDLE_TIMEOUT" env:"HTTP_IDLE_TIMEOUT"`       // default: "60s"
+	ServerPort        string `json:"SERVER_PORT" env:"SERVER_PORT"`                           // default: ":8080"
+	ReadTimeout       string `json:"HTTP_READ_TIMEOUT" env:"HTTP_READ_TIMEOUT"`               // default: "10s"
+	WriteTimeout      string `json:"HTTP_WRITE_TIMEOUT" env:"HTTP_WRITE_TIMEOUT"`             // default: "10s"
+	IdleTimeout       string `json:"HTTP_IDLE_TIMEOUT" env:"HTTP_IDLE_TIMEOUT"`               // default: "60s"
 	ReadHeaderTimeout string `json:"HTTP_READ_HEADER_TIMEOUT" env:"HTTP_READ_HEADER_TIMEOUT"` // default: "5s"
-	ShutdownTimeout   string `json:"SHUTDOWN_TIMEOUT" env:"SHUTDOWN_TIMEOUT"`         // default: "10s"
+	ShutdownTimeout   string `json:"SHUTDOWN_TIMEOUT" env:"SHUTDOWN_TIMEOUT"`                 // default: "10s"
 }
 
 // GetServerPort returns the configured listen address (host:port).
@@ -110,6 +110,23 @@ type Validator interface {
 	Validate() error
 }
 
+// Precedence selects how Load[T] resolves overlapping configuration sources.
+type Precedence int
+
+const (
+	// PrecedenceLegacy is the zero value and preserves the historical loader
+	// behavior EXACTLY: Secrets Manager whole-JSON unmarshal, with .env used
+	// only as an SM-failure fallback, and process-environment overrides applied
+	// last (env > secret). Any SM error falls back to the local file.
+	PrecedenceLegacy Precedence = iota
+
+	// PrecedenceSecretOverEnvOverFile is the opt-in per-field mode: file,
+	// process environment, and Secrets Manager JSON are loaded independently
+	// and merged per field in the order file < env < secret, then validation
+	// runs. AWS errors are classified (see "AWS error classification").
+	PrecedenceSecretOverEnvOverFile
+)
+
 // LoadOptions contains optional configuration for the loader
 type LoadOptions struct {
 	// LocalPath overrides the default .env path
@@ -129,6 +146,11 @@ type LoadOptions struct {
 
 	// SkipValidation skips the automatic validation of required fields
 	SkipValidation bool
+
+	// Precedence selects source-resolution order. Zero value = PrecedenceLegacy
+	// (unchanged behavior). Set to PrecedenceSecretOverEnvOverFile to opt into
+	// per-field secret > env > file resolution.
+	Precedence Precedence
 }
 
 // LoadCore is a convenience function to load CoreConfig
@@ -151,9 +173,13 @@ func LoadMedia(secretName string, opts ...LoadOptions) (*MediaConfig, error) {
 	return Load[MediaConfig](secretName, opts...)
 }
 
-// Load loads configuration into the provided struct type using generics
+// Load loads configuration into the provided struct type using generics.
+//
+// The resolution strategy is selected by LoadOptions.Precedence. The zero value
+// (PrecedenceLegacy) preserves the historical behavior exactly; an invalid
+// Precedence value is a hard error and never silently falls back to legacy or
+// local mode (even when ForceLocal is set).
 func Load[T any](secretName string, opts ...LoadOptions) (*T, error) {
-	var cfg T
 	var options LoadOptions
 
 	if len(opts) > 0 {
@@ -167,6 +193,23 @@ func Load[T any](secretName string, opts ...LoadOptions) (*T, error) {
 	if options.AWSRegion == "" {
 		options.AWSRegion = resolveRegion()
 	}
+
+	switch options.Precedence {
+	case PrecedenceLegacy:
+		return loadLegacy[T](secretName, options)
+	case PrecedenceSecretOverEnvOverFile:
+		return loadPerField[T](secretName, options)
+	default:
+		return nil, fmt.Errorf("awsconfig: invalid Precedence value %d", options.Precedence)
+	}
+}
+
+// loadLegacy holds the historical Load[T] body verbatim: ForceLocal-then-env, or
+// SM-with-file-fallback, then populateFromEnv, then validateConfig. It preserves
+// byte-for-byte legacy behavior. The LocalPath/AWSRegion defaults are applied by
+// Load[T] before dispatch.
+func loadLegacy[T any](secretName string, options LoadOptions) (*T, error) {
+	var cfg T
 
 	if options.ForceLocal {
 		// Dev shortcut — skip SM

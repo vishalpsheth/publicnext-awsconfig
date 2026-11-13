@@ -408,6 +408,34 @@ Interaction with other modes:
 > `secret:"only"` field is the way to say "this value must come from AWS or the
 > process must not start".
 
+### `LoadOptions.RequireSecret` (v1.4.0, opt-in)
+
+By default, in per-field mode a secret that does not exist
+(`ResourceNotFoundException`) is an **empty layer** and loading continues from
+env/file. Set `RequireSecret: true` to make that a hard error instead:
+
+```go
+cfg, err := awsconfig.Load[AppConfig]("qa/publicnext/appconfig", awsconfig.LoadOptions{
+    Precedence:    awsconfig.PrecedenceSecretOverEnvOverFile,
+    RequireSecret: true,
+})
+```
+
+- Requires `PrecedenceSecretOverEnvOverFile` and no `ForceLocal`.
+- Secret not found => error wrapping the not-found sentinel, naming the secret
+  ID (`awsconfig: secret not found (secret "<id>"): RequireSecret is set`).
+- A secret whose body is the JSON literal `null` is also fatal
+  (`awsconfig: secret JSON invalid: body is JSON null`). Without `RequireSecret`
+  it remains an empty layer, as before.
+- An existing secret, even `{}`, satisfies it. Use `secret:"only"` on specific
+  fields to demand specific keys.
+- `RequireSecret` with `ForceLocal` is a contradiction (no secret is fetched) and
+  fails **before any I/O** (no file read, no client).
+- `RequireSecret` with `PrecedenceLegacy` is unsupported and fails explicitly,
+  also before any I/O. The legacy path is unchanged.
+- Access-denied, malformed and transient failures behave exactly as before.
+- Zero value (`false`) changes nothing for existing callers.
+
 #### Profile-style bootstrap example
 
 ```go
@@ -420,7 +448,8 @@ type ProfileBootstrap struct {
 }
 
 cfg, err := awsconfig.Load[ProfileBootstrap](os.Getenv("APPCONFIG_SECRET_ID"), awsconfig.LoadOptions{
-    Precedence: awsconfig.PrecedenceSecretOverEnvOverFile,
+    Precedence:    awsconfig.PrecedenceSecretOverEnvOverFile,
+    RequireSecret: true, // a missing secret fails startup instead of loading only the file
 })
 if err != nil {
     log.Fatal(err) // missing/null ENVIRONMENT in the secret, unreadable secret, ...

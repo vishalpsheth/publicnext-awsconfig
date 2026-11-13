@@ -16,6 +16,14 @@ dependencies, `go.mod`/`go.sum` unchanged.
   - Any `secret` tag value other than `only` (and `secret:"only"` on a field with
     no `env`/`json` key) is a hard configuration error in per-field mode.
 
+- `LoadOptions.RequireSecret bool` (zero value false). In per-field mode without
+  `ForceLocal`, a secret that does not exist, or whose body is JSON `null`, is a
+  hard error instead of an empty layer.
+  - `ForceLocal && RequireSecret` fails before any I/O (contradiction).
+  - `PrecedenceLegacy && RequireSecret` fails explicitly before any I/O.
+  - This is the only public API addition (one optional struct field; all known
+    `LoadOptions{...}` literals in the workspace are keyed).
+
 ## Compatibility
 
 - Structs without a `secret` tag follow exactly the v1.3.0 code paths. This is

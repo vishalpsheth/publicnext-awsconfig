@@ -388,6 +388,12 @@ func mergeFields(cfgPtr interface{}, file rawLayer, secret map[string]json.RawMe
 func loadPerField[T any](secretName string, options LoadOptions) (*T, error) {
 	var cfg T
 
+	// RequireSecret demands a fetched secret; ForceLocal fetches none. Reject the
+	// contradiction before any I/O (no file read, no client).
+	if options.ForceLocal && options.RequireSecret {
+		return nil, errors.New("awsconfig: RequireSecret contradicts ForceLocal (no secret is fetched under ForceLocal)")
+	}
+
 	// Layer 1 — file (lowest), read without mutating os.Environ.
 	fileLayer, err := loadFileLayer(options.LocalPath, options.Logger)
 	if err != nil {
@@ -408,12 +414,20 @@ func loadPerField[T any](secretName string, options LoadOptions) (*T, error) {
 		raw, fErr := fetchSecretRaw(ctx, client, secretName, options.Logger)
 		if fErr != nil {
 			if errors.Is(fErr, errSecretNotFound) {
+				if options.RequireSecret {
+					return nil, fmt.Errorf("%w (secret %q): RequireSecret is set", errSecretNotFound, secretName)
+				}
 				logInfo(options.Logger, "Secret not found; falling back to env/file", secretName)
 				secretLayer = nil
 			} else {
 				return nil, fErr
 			}
 		} else {
+			// A JSON-null body unmarshals to a nil map, indistinguishable from a
+			// missing secret downstream; under RequireSecret it is fatal.
+			if options.RequireSecret && raw == nil {
+				return nil, fmt.Errorf("%w: body is JSON null", errSecretMalformed)
+			}
 			secretLayer = raw
 		}
 	}

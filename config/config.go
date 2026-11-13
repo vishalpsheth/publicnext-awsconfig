@@ -3,6 +3,7 @@ package awsconfig
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"reflect"
@@ -96,6 +97,14 @@ type LoadOptions struct {
 	// (unchanged behavior). Set to PrecedenceSecretOverEnvOverFile to opt into
 	// per-field secret > env > file resolution.
 	Precedence Precedence
+
+	// RequireSecret makes a missing secret fatal in per-field mode. When true
+	// (PrecedenceSecretOverEnvOverFile, not ForceLocal), a secret that does not
+	// exist (ResourceNotFoundException) or whose body is the JSON literal null is
+	// a hard error instead of an empty layer that falls back to env/file. It is
+	// an error to combine it with ForceLocal (no secret is fetched) or with
+	// PrecedenceLegacy (unsupported). Zero value (false) preserves prior behavior.
+	RequireSecret bool
 }
 
 // LoadCore is a convenience function to load CoreConfig
@@ -141,6 +150,9 @@ func Load[T any](secretName string, opts ...LoadOptions) (*T, error) {
 
 	switch options.Precedence {
 	case PrecedenceLegacy:
+		if options.RequireSecret {
+			return nil, errors.New("awsconfig: RequireSecret is not supported with PrecedenceLegacy")
+		}
 		return loadLegacy[T](secretName, options)
 	case PrecedenceSecretOverEnvOverFile:
 		return loadPerField[T](secretName, options)

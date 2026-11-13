@@ -1,0 +1,3070 @@
+[
+  {
+    "case": "legacy-forcelocal/core/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/core/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/core/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/core/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/core/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/core/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/core/file-only",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/core/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/core/file-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/core/file-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/core/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/core/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/core/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/core/file-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/core/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/core/file-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/core/env-only",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/core/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/core/env-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/core/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/core/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/core/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/core/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/core/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/core/env-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/core/env-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/core/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/core/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/core/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/core/env-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/core/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/core/env-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/core/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/core/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/core/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/core/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/core/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/core/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/core/file+env",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/core/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/core/file+env",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/core/file+env",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/core/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/core/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/core/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/core/file+env",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/core/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/core/file+env",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/core/none",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/core/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/core/none",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/core/none",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/core/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/core/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/core/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/core/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/core/none",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/core/none",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/core/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/core/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/core/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/core/none",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/core/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/core/none",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/streams/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "CONSUMER_NAME": "file-consumer",
+      "MAX_RETRIES": "2"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/streams/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "CONSUMER_NAME": "file-consumer",
+      "MAX_RETRIES": "2"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/streams/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "CONSUMER_NAME": "sec-consumer",
+      "MAX_RETRIES": "9"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/streams/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env",
+      "CONSUMER_NAME": "file-consumer",
+      "MAX_RETRIES": "2"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/streams/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "CONSUMER_NAME": "file-consumer",
+      "MAX_RETRIES": "2"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/streams/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "CONSUMER_NAME": "file-consumer",
+      "MAX_RETRIES": "2"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/streams/file-only",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/streams/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "CONSUMER_NAME": "file-consumer",
+      "MAX_RETRIES": "2"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/streams/file-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/streams/file-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/streams/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/streams/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/streams/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/streams/file-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/streams/file-only",
+    "error": "field MAX_RETRIES from secret is not a valid integer",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/streams/file-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/streams/env-only",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/streams/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/streams/env-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "CONSUMER_NAME": "sec-consumer",
+      "MAX_RETRIES": "9"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/streams/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/streams/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/streams/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/streams/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/streams/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/streams/env-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/streams/env-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/streams/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/streams/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/streams/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/streams/env-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/streams/env-only",
+    "error": "field MAX_RETRIES from secret is not a valid integer",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/streams/env-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/streams/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "CONSUMER_NAME": "env-consumer",
+      "MAX_RETRIES": "7"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/streams/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "CONSUMER_NAME": "env-consumer",
+      "MAX_RETRIES": "7"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/streams/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "CONSUMER_NAME": "sec-consumer",
+      "MAX_RETRIES": "9"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/streams/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env",
+      "CONSUMER_NAME": "env-consumer",
+      "MAX_RETRIES": "7"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/streams/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "CONSUMER_NAME": "env-consumer",
+      "MAX_RETRIES": "7"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/streams/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "CONSUMER_NAME": "env-consumer",
+      "MAX_RETRIES": "7"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/streams/file+env",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/streams/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "CONSUMER_NAME": "env-consumer",
+      "MAX_RETRIES": "7"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/streams/file+env",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/streams/file+env",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/streams/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/streams/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/streams/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/streams/file+env",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/streams/file+env",
+    "error": "field MAX_RETRIES from secret is not a valid integer",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/streams/file+env",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/streams/none",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/streams/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/streams/none",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "CONSUMER_NAME": "sec-consumer",
+      "MAX_RETRIES": "9"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/streams/none",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/streams/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/streams/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/streams/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/streams/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/streams/none",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/streams/none",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/streams/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/streams/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/streams/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/streams/none",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/streams/none",
+    "error": "field MAX_RETRIES from secret is not a valid integer",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/streams/none",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/web/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "APP_DOMAIN": "file.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/web/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "APP_DOMAIN": "file.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/web/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "APP_DOMAIN": "sec.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/web/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env",
+      "APP_DOMAIN": "file.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/web/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "APP_DOMAIN": "file.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/web/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "APP_DOMAIN": "file.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/web/file-only",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/web/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "APP_DOMAIN": "file.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/web/file-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/web/file-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/web/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/web/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/web/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/web/file-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/web/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "APP_DOMAIN": "file.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/web/file-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/web/env-only",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/web/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/web/env-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "APP_DOMAIN": "sec.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/web/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/web/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/web/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/web/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/web/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/web/env-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/web/env-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/web/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/web/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/web/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/web/env-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/web/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/web/env-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/web/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "APP_DOMAIN": "env.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/web/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "APP_DOMAIN": "env.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/web/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "APP_DOMAIN": "sec.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/web/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env",
+      "APP_DOMAIN": "env.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/web/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "APP_DOMAIN": "env.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/web/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "APP_DOMAIN": "env.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/web/file+env",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/web/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "APP_DOMAIN": "env.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/web/file+env",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/web/file+env",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/web/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/web/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/web/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/web/file+env",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/web/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "APP_DOMAIN": "env.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/web/file+env",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/web/none",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/web/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/web/none",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "APP_DOMAIN": "sec.example",
+      "APP_DOWNLOAD_LINK": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/web/none",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/web/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/web/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/web/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/web/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/web/none",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/web/none",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/web/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/web/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/web/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/web/none",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/web/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/web/none",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/media/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/media/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/media/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "PRIMARY_IMG_CDN": "sec-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "sec-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/media/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/media/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/media/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/media/file-only",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/media/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/media/file-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/media/file-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/media/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/media/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/media/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/media/file-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/media/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/media/file-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/media/env-only",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/media/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/media/env-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "PRIMARY_IMG_CDN": "sec-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "sec-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/media/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/media/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/media/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/media/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/media/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/media/env-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/media/env-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/media/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/media/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/media/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/media/env-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/media/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/media/env-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/media/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/media/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/media/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "PRIMARY_IMG_CDN": "sec-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "sec-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/media/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/media/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/media/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/media/file+env",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/media/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/media/file+env",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/media/file+env",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/media/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/media/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/media/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/media/file+env",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/media/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "PRIMARY_IMG_CDN": "file-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "file-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/media/file+env",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/media/none",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/media/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/media/none",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "POSTGRES_DSN": "",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "PRIMARY_IMG_CDN": "sec-img",
+      "BACKUP_IMG_CDN": "",
+      "PRIMARY_VID_CDN": "sec-vid",
+      "BACKUP_VID_CDN": ""
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/media/none",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/media/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/media/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/media/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/media/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/media/none",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/media/none",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/media/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/media/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/media/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/media/none",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/media/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/media/none",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/required/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "SERVER_PORT": ":1111",
+      "MAX_RETRIES": "2",
+      "DEBUG": false,
+      "TIMEOUT": 1000000000
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/required/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "SERVER_PORT": ":1111",
+      "MAX_RETRIES": "2",
+      "DEBUG": false,
+      "TIMEOUT": 1000000000
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/required/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "SERVER_PORT": ":3333",
+      "MAX_RETRIES": "9",
+      "DEBUG": false,
+      "TIMEOUT": 3000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/required/file-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env",
+      "SERVER_PORT": ":1111",
+      "MAX_RETRIES": "2",
+      "DEBUG": false,
+      "TIMEOUT": 1000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/required/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "SERVER_PORT": ":1111",
+      "MAX_RETRIES": "2",
+      "DEBUG": false,
+      "TIMEOUT": 1000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/required/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "SERVER_PORT": ":1111",
+      "MAX_RETRIES": "2",
+      "DEBUG": false,
+      "TIMEOUT": 1000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/required/file-only",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/required/file-only",
+    "result": {
+      "MONGO_URI": "file-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "file-env",
+      "SERVER_PORT": ":1111",
+      "MAX_RETRIES": "2",
+      "DEBUG": false,
+      "TIMEOUT": 1000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/required/file-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/required/file-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/required/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/required/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/required/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/required/file-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/required/file-only",
+    "error": "field MAX_RETRIES from secret is not a valid integer",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/required/file-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/required/env-only",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/required/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/required/env-only",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "SERVER_PORT": ":3333",
+      "MAX_RETRIES": "9",
+      "DEBUG": false,
+      "TIMEOUT": 3000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/required/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/required/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/required/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/required/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/required/env-only",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/required/env-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/required/env-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/required/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/required/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/required/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/required/env-only",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/required/env-only",
+    "error": "field MAX_RETRIES from secret is not a valid integer",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/required/env-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/required/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "SERVER_PORT": ":2222",
+      "MAX_RETRIES": "7",
+      "DEBUG": true,
+      "TIMEOUT": 5000000000
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/required/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "SERVER_PORT": ":2222",
+      "MAX_RETRIES": "7",
+      "DEBUG": true,
+      "TIMEOUT": 5000000000
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/required/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "SERVER_PORT": ":3333",
+      "MAX_RETRIES": "9",
+      "DEBUG": false,
+      "TIMEOUT": 3000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/required/file+env",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "sec-env",
+      "SERVER_PORT": ":2222",
+      "MAX_RETRIES": "7",
+      "DEBUG": true,
+      "TIMEOUT": 5000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/required/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "SERVER_PORT": ":2222",
+      "MAX_RETRIES": "7",
+      "DEBUG": true,
+      "TIMEOUT": 5000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/required/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "SERVER_PORT": ":2222",
+      "MAX_RETRIES": "7",
+      "DEBUG": true,
+      "TIMEOUT": 5000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/required/file+env",
+    "error": "validation failed: missing required fields: MONGO_DB",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/required/file+env",
+    "result": {
+      "MONGO_URI": "env-uri",
+      "MONGO_DB": "file-db",
+      "CACHE_ADDR": "file-cache",
+      "AWS_REGION": "file-region",
+      "ENVIRONMENT": "env-env",
+      "SERVER_PORT": ":2222",
+      "MAX_RETRIES": "7",
+      "DEBUG": true,
+      "TIMEOUT": 5000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/required/file+env",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/required/file+env",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/required/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/required/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/required/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/required/file+env",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/required/file+env",
+    "error": "field MAX_RETRIES from secret is not a valid integer",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/required/file+env",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/required/none",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/required/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/required/none",
+    "result": {
+      "MONGO_URI": "sec-uri",
+      "MONGO_DB": "sec-db",
+      "CACHE_ADDR": "sec-cache",
+      "AWS_REGION": "sec-region",
+      "ENVIRONMENT": "sec-env",
+      "SERVER_PORT": ":3333",
+      "MAX_RETRIES": "9",
+      "DEBUG": false,
+      "TIMEOUT": 3000000000
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/required/none",
+    "error": "validation failed: missing required fields: MONGO_DB, CACHE_ADDR, AWS_REGION",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/required/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/required/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/required/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/required/none",
+    "error": "validation failed: missing required fields: MONGO_URI, MONGO_DB, CACHE_ADDR, AWS_REGION, ENVIRONMENT",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/required/none",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/required/none",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/required/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/required/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/required/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/required/none",
+    "error": "awsconfig: secret JSON invalid: field MONGO_URI has a non-scalar value in secret",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/required/none",
+    "error": "field MAX_RETRIES from secret is not a valid integer",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/required/none",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/validator/file-only",
+    "result": {
+      "NAME": "file-name",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/validator/file-only",
+    "result": {
+      "NAME": "file-name",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/validator/file-only",
+    "result": {
+      "NAME": "sec-name",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/validator/file-only",
+    "result": {
+      "NAME": "file-name",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/validator/file-only",
+    "result": {
+      "NAME": "file-name",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/validator/file-only",
+    "result": {
+      "NAME": "file-name",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/validator/file-only",
+    "result": {
+      "NAME": "file-name",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/validator/file-only",
+    "result": {
+      "NAME": "file-name",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/validator/file-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/validator/file-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/validator/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/validator/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/validator/file-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/validator/file-only",
+    "result": {
+      "NAME": "file-name",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/validator/file-only",
+    "result": {
+      "NAME": "file-name",
+      "ENVIRONMENT": "file-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/validator/file-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/validator/env-only",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/validator/env-only",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/validator/env-only",
+    "result": {
+      "NAME": "sec-name",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/validator/env-only",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/validator/env-only",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/validator/env-only",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/validator/env-only",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/validator/env-only",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/validator/env-only",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/validator/env-only",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/validator/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/validator/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/validator/env-only",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/validator/env-only",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/validator/env-only",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/validator/env-only",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/validator/file+env",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/validator/file+env",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/validator/file+env",
+    "result": {
+      "NAME": "sec-name",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/validator/file+env",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/validator/file+env",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/validator/file+env",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/validator/file+env",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/validator/file+env",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/validator/file+env",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/validator/file+env",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/validator/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/validator/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/validator/file+env",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/validator/file+env",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/validator/file+env",
+    "result": {
+      "NAME": "env-name",
+      "ENVIRONMENT": "env-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/validator/file+env",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "legacy-forcelocal/validator/none",
+    "error": "failed to load local config file \u003cTMP\u003e/missing.env: open \u003cTMP\u003e/missing.env: no such file or directory",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-forcelocal/validator/none",
+    "error": "validation failed: name required",
+    "kind": "other",
+    "fetchCalls": 0
+  },
+  {
+    "case": "perfield-secret/full/validator/none",
+    "result": {
+      "NAME": "sec-name",
+      "ENVIRONMENT": "sec-env"
+    },
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/partial/validator/none",
+    "error": "validation failed: name required",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-object/validator/none",
+    "error": "validation failed: name required",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/json-null-body/validator/none",
+    "error": "validation failed: name required",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/null-and-empty-values/validator/none",
+    "error": "validation failed: name required",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/not-found/validator/none",
+    "error": "validation failed: name required",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/access-denied/validator/none",
+    "error": "awsconfig: access denied to secret (secret \"sn\")",
+    "kind": "denied",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/transient/validator/none",
+    "error": "awsconfig: secret retrieval failed after retries (secret \"sn\", retried 3 times): awsconfig: secret retrieval failed after retries",
+    "kind": "transient",
+    "fetchCalls": 3
+  },
+  {
+    "case": "perfield-secret/malformed/validator/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/empty-string-body/validator/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/array-body/validator/none",
+    "error": "awsconfig: secret JSON invalid: body is not a JSON object",
+    "kind": "malformed",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/non-scalar-value/validator/none",
+    "error": "validation failed: name required",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/bad-int/validator/none",
+    "error": "validation failed: name required",
+    "kind": "other",
+    "fetchCalls": 1
+  },
+  {
+    "case": "perfield-secret/nil-secret-string/validator/none",
+    "error": "awsconfig: secret JSON invalid: secret has no string body",
+    "kind": "malformed",
+    "fetchCalls": 1
+  }
+]

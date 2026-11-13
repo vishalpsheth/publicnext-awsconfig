@@ -358,6 +358,84 @@ absent and permits fallback, as described above.) Errors and logs never contain
 secret values. An invalid `Precedence` value is a hard error and never silently
 selects local mode.
 
+### Secret-only fields: `secret:"only"` (v1.4.0, opt-in)
+
+Some values must never come from the process environment or a file, for example
+an `ENVIRONMENT` selector that is supposed to prove which deployment you are in.
+Tag such a field with `secret:"only"`:
+
+```go
+type AppConfig struct {
+    Environment string `json:"ENVIRONMENT" env:"ENVIRONMENT" secret:"only"`
+    MongoDB     string `json:"MONGO_DB" env:"MONGO_DB"` // untagged: secret > env > file
+}
+```
+
+The tag is purely additive; structs without it behave exactly as in v1.3.0.
+
+Semantics in `PrecedenceSecretOverEnvOverFile` when a secret fetch is attempted
+(i.e. not `ForceLocal`):
+
+- The field resolves from the **secret layer only**. The process environment and
+  the `.env` file are never consulted for it, even if they hold a value.
+- If the key is **absent** from the secret, is JSON **`null`**, or the secret does
+  **not exist** (no secret layer), loading fails with
+  `awsconfig: field <KEY> is secret-only but absent from secret`. The error names
+  the key only, never a value.
+- A **present empty string** (`""`) is a present value and is accepted as empty.
+  Whether an empty value is acceptable is then up to `required:"true"` or your
+  `Validate()`, exactly as for any other field.
+- Parsing is strict and identical to other fields (ints, bools, durations, ...).
+- Embedded structs are supported (the tag is honored on fields of embedded types).
+- The tag value must be exactly `only`. Any other non-empty value (for example a
+  typo such as `secret:"onyl"`), or `secret:"only"` on a field with no `env`/`json`
+  key, is a hard configuration error in per-field mode. It is reported even under
+  `ForceLocal`, so mistakes cannot hide until deployment. The error names the Go
+  field, not the tag value.
+
+Interaction with other modes:
+
+- **`ForceLocal`**: the tag is **ignored**. Resolution is environment > file, no
+  Secrets Manager client is built and no AWS call is made. The tag value is still
+  validated.
+- **`PrecedenceLegacy`**: the tag is **ignored** (and not validated). The legacy
+  code path is unchanged, so legacy callers are unaffected.
+- **Fetch failures** (access denied, malformed body, transient exhaustion) are
+  unchanged: they fail startup with the same errors.
+
+> Why this matters: with plain per-field mode a missing secret is an *empty layer*,
+> and a field missing from the secret silently falls back to the environment. A
+> `secret:"only"` field is the way to say "this value must come from AWS or the
+> process must not start".
+
+#### Profile-style bootstrap example
+
+```go
+// Use your own struct: the built-in CoreConfig does not carry the tag.
+type ProfileBootstrap struct {
+    // ENVIRONMENT must come from the secret itself, never from env/config.env.
+    Environment string `json:"ENVIRONMENT" env:"ENVIRONMENT" secret:"only" required:"true"`
+    MongoURI    string `json:"MONGO_URI" env:"MONGO_URI" required:"true"`
+    MongoDB     string `json:"MONGO_DB" env:"MONGO_DB" required:"true"`
+}
+
+cfg, err := awsconfig.Load[ProfileBootstrap](os.Getenv("APPCONFIG_SECRET_ID"), awsconfig.LoadOptions{
+    Precedence: awsconfig.PrecedenceSecretOverEnvOverFile,
+})
+if err != nil {
+    log.Fatal(err) // missing/null ENVIRONMENT in the secret, unreadable secret, ...
+}
+// The library proves the value came from the secret; it cannot know which
+// deployment you intend. The CALLER cross-checks it:
+if cfg.Environment != expectedEnvironment { // from a deployment-provided selector
+    log.Fatalf("ENVIRONMENT mismatch: secret does not match this deployment")
+}
+```
+
+The cross-check is deliberately the caller's job: the library guarantees the
+value is sourced from the secret, the caller decides whether it is the *right*
+secret for this deployment.
+
 ## Validation
 
 ### Default Validation

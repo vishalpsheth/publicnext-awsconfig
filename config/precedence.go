@@ -175,6 +175,9 @@ func resolveKey(fieldType reflect.StructField) string {
 	return strings.ToUpper(strings.Split(jsonTag, ",")[0])
 }
 
+// secretModeOnly is the only accepted value of the `secret` struct tag.
+const secretModeOnly = "only"
+
 // rawLayer maps a field resolution key to its present string token. Presence is
 // tracked by key existence in the map, independent of the token's content.
 type rawLayer map[string]string
@@ -281,7 +284,15 @@ func setFieldFromString(field reflect.Value, token, key, layer string) error {
 // selects the highest PRESENT layer (secret > env > file) and decodes it. A
 // field absent from all layers is left at its Go zero value (no Load-time
 // defaulting).
-func mergeFields(cfgPtr interface{}, file rawLayer, secret map[string]json.RawMessage) error {
+//
+// A field tagged secret:"only" resolves from the secret layer exclusively when
+// secretAttempted is true (a fetch was made, i.e. not ForceLocal): it never
+// consults the process environment or the file, and a key that is absent or
+// JSON null in the secret (including no secret layer at all) is a hard error.
+// secretAttempted is passed explicitly and never inferred from secret == nil,
+// because a not-found secret and a secret whose body is the JSON literal null
+// both produce a nil map. When secretAttempted is false the tag is ignored.
+func mergeFields(cfgPtr interface{}, file rawLayer, secret map[string]json.RawMessage, secretAttempted bool) error {
 	v := reflect.ValueOf(cfgPtr)
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
@@ -294,7 +305,7 @@ func mergeFields(cfgPtr interface{}, file rawLayer, secret map[string]json.RawMe
 
 		// Recurse into embedded structs.
 		if fieldType.Anonymous {
-			if err := mergeFields(field.Addr().Interface(), file, secret); err != nil {
+			if err := mergeFields(field.Addr().Interface(), file, secret, secretAttempted); err != nil {
 				return err
 			}
 			continue
@@ -304,8 +315,35 @@ func mergeFields(cfgPtr interface{}, file rawLayer, secret map[string]json.RawMe
 			continue
 		}
 
+		// The secret tag is validated before the key-less skip so that a typo
+		// or an inert tag can never go unnoticed (also under ForceLocal).
+		mode := fieldType.Tag.Get("secret")
+		if mode != "" && mode != secretModeOnly {
+			return fmt.Errorf("awsconfig: field %s has invalid secret tag value; only %q is supported",
+				fieldType.Name, secretModeOnly)
+		}
+
 		key := resolveKey(fieldType)
 		if key == "" {
+			if mode == secretModeOnly {
+				return fmt.Errorf("awsconfig: field %s is tagged secret:%q but has no env/json key",
+					fieldType.Name, secretModeOnly)
+			}
+			continue
+		}
+
+		// Secret-only: the secret layer is the sole source. No env, no file.
+		if mode == secretModeOnly && secretAttempted {
+			token, present, err := secretTokenForKey(secret, key)
+			if err != nil {
+				return err
+			}
+			if !present {
+				return fmt.Errorf("awsconfig: field %s is secret-only but absent from secret", key)
+			}
+			if err := setFieldFromString(field, token, key, "secret"); err != nil {
+				return err
+			}
 			continue
 		}
 
@@ -381,7 +419,7 @@ func loadPerField[T any](secretName string, options LoadOptions) (*T, error) {
 	}
 
 	// Layer 2 (env) is read per field inside mergeFields via os.LookupEnv.
-	if err := mergeFields(&cfg, fileLayer, secretLayer); err != nil {
+	if err := mergeFields(&cfg, fileLayer, secretLayer, !options.ForceLocal); err != nil {
 		return nil, err
 	}
 
